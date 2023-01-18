@@ -13,8 +13,18 @@ provider "linode" {
 } 
 
 
-resource "linode_instances" "bitwarden-instance" {
+resource "linode_instance" "bitwarden-instance" {
+  label = "bitwarden"
+  image = "linode/ubuntu22.10"
+  region = "eu-central"
+  type = "g6-nanode-1"
+  root_pass = var.root_password
+  tags = ["vault"]
 
+
+  interface {
+    purpose ="public"
+  }
 }
 
 
@@ -30,17 +40,17 @@ resource "linode_domain" "lorenzosacchi-dns" {
 
 
 resource "linode_domain_record" "bitwarden-dns-record-ipv4" {
-  name = "bitwarden"
+  name = "personalvault"
   domain_id = linode_domain.lorenzosacchi-dns.id
-  type = "A"
-  target = linode_instances.bitwarden-instance.ipv4
+  record_type = "A"
+  target = tolist(linode_instance.bitwarden-instance.ipv4)[0]
 }
 
 resource "linode_domain_record" "bitwarden-dns-record-ipv6" {
-  name = "bitwarden"
+  name = "personalvault"
   domain_id = linode_domain.lorenzosacchi-dns.id
-  type = "AAAA"
-  target = linode_instances.bitwarden-instance.ipv6
+  record_type = "AAAA"
+  target = split("/",tolist([linode_instance.bitwarden-instance.ipv6])[0])[0]
 }
 
 resource "linode_firewall" "bitwarden-firewall"{
@@ -53,8 +63,8 @@ resource "linode_firewall" "bitwarden-firewall"{
     action   = "ACCEPT"
     protocol = "TCP"
     ports    = "443"
-    ipv4     = [linode_instances.bitwarden-instance.ipv4]
-    ipv6     = [linode_instances.bitwarden-instance.ipv6]
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
   }
 
   inbound {
@@ -62,12 +72,11 @@ resource "linode_firewall" "bitwarden-firewall"{
     action   = "ACCEPT"
     protocol = "TCP"
     ports    = "22"
-    ipv4     = [linode_instances.bitwarden-instance.ipv4]
-    ipv6     = [linode_instances.bitwarden-instance.ipv6]
+    ipv4     = ["0.0.0.0/0"]
+    ipv6     = ["::/0"]
   }
 
   outbound_policy = "ACCEPT"
 
   linodes = [linode_instance.bitwarden-instance.id]
 }
-
