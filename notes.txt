@@ -1,0 +1,55 @@
+NOTES:
+
+- folder in / with permissions
+- create infrastructure in terraform
+- automate with ansible
+- backup in dropbox
+- test backup consistency
+- dropbox copies on local machine also outside dropbox folder
+- github, with tests and documentation
+- infrastructure: vpc, firewall, image, dns
+- updates
+- report status with mail
+- manage secrets
+- use .env file for docker compose
+
+
+
+
+curl -X POST https://api.dropboxapi.com/2/auth/token/from_oauth1 \
+    --header "Authorization: Basic" \
+    --header "Content-Type: application/json" \
+    --data "{\"oauth1_token\":\"xni4xvphxhue88j\",\"oauth1_token_secret\":\"8utzpu0ezgtlusg\"}"
+
+
+curl -X POST https://api.dropboxapi.com/2/auth/token/from_oauth1 \
+  --header 'Authorization: Basic <APP_KEY>:<APP_SECRET>' \
+  --header 'Content-Type: application/json' \
+  --data '{"oauth1_token":"xni4xvphxhue88j","oauth1_token_secret":"8utzpu0ezgtlusg"}'
+
+
+curl -X POST https://content.dropboxapi.com/2/files/upload \
+  --header "Authorization: Bearer $DBTOKEN" \
+  --header "Dropbox-API-Arg: {\"autorename\":false,\"mode\":\"add\",\"mute\":false,\"path\":\"/bitwarden\",\"strict_conflict\":false}" \
+  --header "Content-Type: application/octet-stream" \
+  --data-binary @IMG_20190722_214640.jpg
+
+curl -X POST https://api.dropboxapi.com/2/files/delete_v2 \
+    --header "Authorization: Bearer $DBTOKEN" \
+    --header "Content-Type: application/json" \
+    --data "{\"path\":\"/bitwarden/games list.txt\"}"
+
+curl -X POST https://api.dropboxapi.com/2/files/move_v2 \
+    --header "Authorization: Bearer $DBTOKEN" \
+    --header "Content-Type: application/json" \
+    --data "{\"allow_ownership_transfer\":false,\"allow_shared_folder\":false,\"autorename\":false,\"from_path\":\"/test\",\"to_path\":\"/bitwarden\"}"
+
+curl -X POST https://api.dropboxapi.com/2/files/move_batch_v2 \
+    --header "Authorization: Bearer $DBTOKEN" \
+    --header "Content-Type: application/json" \
+    --data "{\"allow_ownership_transfer\":false,\"autorename\":false,\"entries\":[{\"from_path\":\"/test",\"to_path\":\"/bitwarden"}]}"
+
+curl -X POST https://api.dropboxapi.com/2/files/move_batch/check_v2 \
+    --header "Authorization: Bearer $DBTOKEN" \
+    --header "Content-Type: application/json" \
+    --data "{\"async_job_id\":\"dbjid:AACshdSzL3QyLeN3zAJ7OT9Me0BxtclNJEYKUd2aCbllaTJBRzQtE7MWhmrbMet0mVVXTxhKSB4EKEoTJgwTabA0\"}"
