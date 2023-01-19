@@ -12,3 +12,8 @@ variable "root_password" {
   type = string
   description = "root password for the vm"
 }
+
+variable "linode_token" {
+  type = string
+  description = "linode token"
+}

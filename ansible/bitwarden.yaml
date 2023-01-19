@@ -1,0 +1,77 @@
+---
+- name: virtual machine update
+  gather_facts: true
+  become: true
+  hosts: vault
+  roles:
+  - vm-update
+
+- name: install all packages needed
+  gather_facts: true
+  become: true
+  hosts: vault
+  roles:
+  - apt-installs
+
+- name: make sure docker daemon is up
+  gather_facts: true
+  become: true
+  hosts: vault
+  roles:
+  - docker-daemon
+
+- name: creathe the sudo user
+  gather_facts: true
+  become: true
+  hosts: vault
+  roles:
+  - user-and-groups
+
+- name: create folders
+  gather_facts: true
+  become: true
+  hosts: vault
+  roles:
+  - folders
+
+- name: add all config and cert files
+  gather_facts: true
+  become: true
+  hosts: vault
+  roles:
+  - config-files
+
+- nmae: docker compose
+  gather_facts: true
+  become: true
+  hosts: vault
+  roles:
+  - doocker-compose
+
+- name:  timers configuration
+  gather_facts: true
+  become: true
+  hosts: vault
+  roles:
+  - systemd-timers
+
+- name: configure ssh daemon
+  gather_facts: true
+  become: true
+  hosts: vault
+  roles:
+  - sshd
+
+- name: restart vm
+  gather_facts: true
+  become: true
+  hosts: vault
+  roles:
+  - vm-restart
+
+- name: result
+  gather_facts: true
+  become: true
+  hosts: vault
+  roles:
+  - tests

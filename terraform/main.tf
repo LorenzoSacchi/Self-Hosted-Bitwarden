@@ -8,8 +8,7 @@ terraform {
 }
 
 provider "linode" {
-  config_path = "vars/linode"
-  config_profile = "personal"
+  token = var.linode_token
 } 
 
 
@@ -21,6 +20,7 @@ resource "linode_instance" "bitwarden-instance" {
   root_pass = var.root_password
   tags = ["vault"]
 
+group = "vault"
 
   interface {
     purpose ="public"
@@ -44,6 +44,11 @@ resource "linode_domain_record" "bitwarden-dns-record-ipv4" {
   domain_id = linode_domain.lorenzosacchi-dns.id
   record_type = "A"
   target = tolist(linode_instance.bitwarden-instance.ipv4)[0]
+
+  depends_on = [
+    linode_domain.lorenzosacchi-dns
+  ]
+
 }
 
 resource "linode_domain_record" "bitwarden-dns-record-ipv6" {
@@ -51,6 +56,11 @@ resource "linode_domain_record" "bitwarden-dns-record-ipv6" {
   domain_id = linode_domain.lorenzosacchi-dns.id
   record_type = "AAAA"
   target = split("/",tolist([linode_instance.bitwarden-instance.ipv6])[0])[0]
+
+  depends_on = [
+    linode_domain.lorenzosacchi-dns
+  ]
+
 }
 
 resource "linode_firewall" "bitwarden-firewall"{
@@ -79,4 +89,9 @@ resource "linode_firewall" "bitwarden-firewall"{
   outbound_policy = "ACCEPT"
 
   linodes = [linode_instance.bitwarden-instance.id]
+
+  depends_on = [
+    linode_instance.bitwarden-instance
+  ]
+
 }
