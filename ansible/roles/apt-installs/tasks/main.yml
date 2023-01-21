@@ -1,1 +1,12 @@
 ---
+- name: add missing packages
+  apt:
+    update_cache: yes
+    state: latest
+    name: "{{ item }}"
+  with_items:
+  - vim
+  - curl
+  - docker-ce 
+  - docker-ce-cli 
+  - containerd.io

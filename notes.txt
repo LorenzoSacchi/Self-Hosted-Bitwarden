@@ -53,3 +53,15 @@ curl -X POST https://api.dropboxapi.com/2/files/move_batch/check_v2 \
     --header "Authorization: Bearer $DBTOKEN" \
     --header "Content-Type: application/json" \
     --data "{\"async_job_id\":\"dbjid:AACshdSzL3QyLeN3zAJ7OT9Me0BxtclNJEYKUd2aCbllaTJBRzQtE7MWhmrbMet0mVVXTxhKSB4EKEoTJgwTabA0\"}"
+
+
+missing steps:
+tf: 
+- add ssh key
+- script that adds variables
+- safe place for tfstate
+
+ansible:
+- variable for repo
+- ssh key as variable
+- molecule

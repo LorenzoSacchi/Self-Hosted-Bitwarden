@@ -1,1 +1,24 @@
 ---
+- name: add docker-ce apt-key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: add docker-ce repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    state: present
+    filename: docker-ce
+
+- name: update the machine
+  apt:
+    update_cache: yes
+    upgrade: yes
+
+- name: clean not used dependencies
+  apt:
+    autoremove: yes
+
+- name: clean
+  apt:
+    clean: yes
