@@ -1,1 +1,6 @@
 ---
+- name: systemd docker daemon: enabled and started
+  systemd:
+    name: docker
+    state: started
+    enabled: true
